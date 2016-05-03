@@ -26,7 +26,6 @@ import org.openqa.selenium.support.ui.Select;
  */
 public class Main {
     public static void main(String[] args) throws IOException {
-        
         try(Writer w = Files.newBufferedWriter(FileSystems.getDefault().getPath("out.csv"), Charset.defaultCharset(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
                 PrintWriter writer = new PrintWriter(w)) {
             
@@ -39,12 +38,12 @@ public class Main {
             FirefoxProfile firefoxProfile = new FirefoxProfile();
             WebDriver driver = new FirefoxDriver(ffBinary,firefoxProfile);            
             driver.get("http://www.stj.jus.br/SCON/");
-            driver.findElement(By.name("pesquisaLivre")).clear();
+            driver.findElement(By.id("pesquisaLivre")).clear();
             //driver.findElement(By.name("pesquisaLivre")).sendKeys("LEASING E DOLAR");
             driver.findElement(By.name("data_inicial")).clear();
-           driver.findElement(By.name("data_inicial")).sendKeys("02062014");
+            driver.findElement(By.name("data_inicial")).sendKeys("02062014");
             driver.findElement(By.name("data_final")).clear();
-           driver.findElement(By.name("data_final")).sendKeys("31122014");
+            driver.findElement(By.name("data_final")).sendKeys("31122014");
             new Select(driver.findElement(By.name("tipo_data"))).selectByVisibleText("Publicação");
             List<WebElement> listCheckBoxes = driver.findElements(By.name("b"));
             listCheckBoxes.stream().forEach((chkbox) -> {
