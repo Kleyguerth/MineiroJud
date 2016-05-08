@@ -1,6 +1,5 @@
 package com.dgscofield.mavenproject1;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
@@ -13,11 +12,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxBinary;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.Select;
 
 /**
@@ -32,36 +32,31 @@ public class Main {
             writer.println("Processo;Relator;Relator para o Acordao;Orgao Julgador;Data do Julgamento;Data da PublicaÃ§Ã£o;Ementa;" +
                     "AcÃ³rdÃ£o;Notas;Outras informaÃ§Ãµes;Palavras de resgate;Referencia legislativa;" +
                     "Doutrina;Veja;Sucessivos");
-            //File pathToBinary = new File("C:\\Program Files\\Firefox\\firefox.exe");
-            File pathToBinary = new File("C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe");
-            FirefoxBinary ffBinary = new FirefoxBinary(pathToBinary);
-            FirefoxProfile firefoxProfile = new FirefoxProfile();
-            WebDriver driver = new FirefoxDriver(ffBinary,firefoxProfile);            
+            System.setProperty(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, FileSystems.getDefault().getPath("phantomjs.exe").toString());
+            WebDriver driver = new PhantomJSDriver(DesiredCapabilities.phantomjs());
+            driver.manage().window().maximize();
             driver.get("http://www.stj.jus.br/SCON/");
-            driver.findElement(By.id("pesquisaLivre")).clear();
+            //driver.findElement(By.id("pesquisaLivre")).clear();
             //driver.findElement(By.name("pesquisaLivre")).sendKeys("LEASING E DOLAR");
             driver.findElement(By.name("data_inicial")).clear();
             driver.findElement(By.name("data_inicial")).sendKeys("02062014");
             driver.findElement(By.name("data_final")).clear();
             driver.findElement(By.name("data_final")).sendKeys("31122014");
             new Select(driver.findElement(By.name("tipo_data"))).selectByVisibleText("Publicação");
+            JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
             List<WebElement> listCheckBoxes = driver.findElements(By.name("b"));
             listCheckBoxes.stream().forEach((chkbox) -> {
                 if(chkbox.getAttribute("value").equalsIgnoreCase("ACOR")) {
-                    if(!chkbox.isSelected()) {
-                        chkbox.click();
-                    }
+                    jsExecutor.executeScript("arguments[0].checked = true", chkbox);
                 }
                 else {
-                    if(chkbox.isSelected()) {
-                        chkbox.click();
-                    }
+                    jsExecutor.executeScript("arguments[0].checked = false", chkbox);
                 }
             });
 
             driver.findElement(By.cssSelector("input[type='submit']")).click();
 
-            driver.findElement(By.xpath("//div[@id='resumopesquisa']/div[2]/span[2]")).click();
+            driver.findElement(By.xpath("//div[@id='resumopesquisa']/div[2]/span[2]/a")).click();
             WebElement botaoProx = null;
             do {
                 if(botaoProx != null)
@@ -134,6 +129,8 @@ public class Main {
                     }
                 });
             } while(botaoProx != null);
+        } finally {
+            System.exit(0);
         }
     }
 }
