@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
+import org.kohsuke.args4j.CmdLineParser;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -26,6 +27,7 @@ import org.openqa.selenium.support.ui.Select;
  */
 public class Main {
     public static void main(String[] args) throws IOException {
+        WebDriver driver = null;
         try(Writer w = Files.newBufferedWriter(FileSystems.getDefault().getPath("out.csv"), Charset.defaultCharset(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
                 PrintWriter writer = new PrintWriter(w)) {
             
@@ -33,7 +35,7 @@ public class Main {
                     "AcÃ³rdÃ£o;Notas;Outras informaÃ§Ãµes;Palavras de resgate;Referencia legislativa;" +
                     "Doutrina;Veja;Sucessivos");
             System.setProperty(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, FileSystems.getDefault().getPath("phantomjs.exe").toString());
-            WebDriver driver = new PhantomJSDriver(DesiredCapabilities.phantomjs());
+            driver = new PhantomJSDriver(DesiredCapabilities.phantomjs());
             driver.manage().window().maximize();
             driver.get("http://www.stj.jus.br/SCON/");
             //driver.findElement(By.id("pesquisaLivre")).clear();
@@ -81,7 +83,7 @@ public class Main {
                         } else if(StringUtils.equalsIgnoreCase(titulo, "Relator(a)")) {
                             processo.setRelator(texto);
                         } else if(StringUtils.containsIgnoreCase(titulo, "Relator(a) p/")) {
-                            processo.setrelatorParaAcordao(texto);
+                            processo.setRelatorParaAcordao(texto);
                         } else if(StringUtils.containsIgnoreCase(titulo, "Órgão Julgador")) {
                             processo.setOrgaoJulgador(texto);
                         } else if(StringUtils.containsIgnoreCase(titulo, "Data do julgamento")) {
@@ -130,6 +132,9 @@ public class Main {
                 });
             } while(botaoProx != null);
         } finally {
+            if (driver != null) {
+                driver.quit();
+            }
             System.exit(0);
         }
     }

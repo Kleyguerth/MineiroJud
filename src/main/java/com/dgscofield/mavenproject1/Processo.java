@@ -53,17 +53,18 @@ public class Processo implements Serializable {
     public void setRelator(String relator) {
         this.relator = relator;
     }
- /**
+    
+    /**
      * @return the relatorParaAcordao
      */
-    public String getrelatorParaAcordao() {
+    public String getRelatorParaAcordao() {
         return relatorParaAcordao;
     }
 
     /**
      * @param relatorParaAcordao the relatorParaAcordao to set
      */
-    public void setrelatorParaAcordao(String relatorParaAcordao) {
+    public void setRelatorParaAcordao(String relatorParaAcordao) {
         this.relatorParaAcordao = relatorParaAcordao;
     }
     /**
@@ -240,7 +241,7 @@ public class Processo implements Serializable {
         //"Doutrina;Veja;Sucessivos
         out.write(getProcesso().replace(';', '|').replaceAll("\\n", "|") + ";");
         out.write(getRelator().replace(';', '|').replaceAll("\\n", " ") + ";");
-        out.write(getrelatorParaAcordao().replace(';', '|').replaceAll("\\n", " ") + ";");
+        out.write(getRelatorParaAcordao().replace(';', '|').replaceAll("\\n", " ") + ";");
         out.write(getOrgaoJulgador().replace(';', '|').replaceAll("\\n", " ") + ";");
         out.write(getDataDoJulgamento().replace(';', '|').replaceAll("\\n", " ") + ";");
         out.write(getDataDaPublicação().replace(';', '|').replaceAll("\\n", " ") + ";");
