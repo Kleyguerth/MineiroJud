@@ -40,6 +40,9 @@ public class MineradorAcordao {
     @Option(name="-o", aliases="--output-file", usage="Caminho do arquivo de saída")
     private String outFilePathParam;
     
+    @Option(name="-p", aliases="--pesquisa-livre", usage="Texto para pesquisa livre")
+    private String pesquisaLivre;
+    
     public void run() throws IOException {
         String outFilePath = outFilePathParam != null ? outFilePathParam : "-";
         
@@ -66,8 +69,11 @@ public class MineradorAcordao {
             driver = new PhantomJSDriver(capabilities);
             driver.manage().window().maximize();
             driver.get("http://www.stj.jus.br/SCON/");
-            //driver.findElement(By.id("pesquisaLivre")).clear();
-            //driver.findElement(By.name("pesquisaLivre")).sendKeys("LEASING E DOLAR");
+            if (pesquisaLivre != null) {
+                WebElement pLivre = driver.findElement(By.id("pesquisaLivre"));
+                pLivre.clear();
+                pLivre.sendKeys(pesquisaLivre);
+            }
             driver.findElement(By.name("data_inicial")).clear();
             driver.findElement(By.name("data_inicial")).sendKeys(dataInicial);
             driver.findElement(By.name("data_final")).clear();
